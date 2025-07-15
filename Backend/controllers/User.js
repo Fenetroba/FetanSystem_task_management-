@@ -91,7 +91,7 @@ export const Login = async (req, res) => {
      }
    };
    
- export const LogOut = async (req, res) => {
+export const LogOut = async (req, res) => {
      try {
        res.clearCookie("accessToken");
        res.clearCookie("refreshToken");
@@ -101,4 +101,13 @@ export const Login = async (req, res) => {
        res.status(500).json({ message: "Server error", error: error.message });
      }
    };
-   
+export const UserProfile = async (req, res) => {
+     try {
+       return res.status(200).json({
+         name: req.user.name,
+         email:req.user.email
+       });
+     } catch (error) {
+       return res.status(401).json({ success: false, message: "Invalid or expired token" });
+     }
+   };
