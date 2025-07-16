@@ -17,13 +17,44 @@ export const CreateTask = async (req, res) => {
     }
 }
 export const GetTask = async (req, res) => {
-     try {
-         const tasks = await taskschema.find();
-         return res.status(200).json({ success: true, tasks });
-     } catch (error) {
-         return res.status(500).json({ success: false, message: "Error fetching tasks" });
-     }
- }
+    try {
+        const userId = req.user.id; 
+
+        // ----------------Pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        //--------------------- Search parameter
+        const search = req.query.search || "";
+
+        //--------------------- Build query
+        const query = {
+            user: userId,
+            ...(search && { name: { $regex: search, $options: "i" } })
+        };
+
+        // Get total count for pagination
+        const total = await taskschema.countDocuments(query);
+
+      
+        const tasks = await taskschema
+            .find(query)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            tasks,
+            page,
+            totalPages: Math.ceil(total / limit),
+            total
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Error fetching tasks" });
+    }
+};
 export const UpdateTask = async (req, res) => {
     try {
         const userId = req.user.id;

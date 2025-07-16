@@ -4,10 +4,10 @@ import { middleware } from "../Middleware/middleware.js";
 const router =express.Router();
 
 
-router.post('/create',middleware ,CreateTask)
-router.get('/get-task',middleware ,GetTask)
-router.patch('/update-task/:id',middleware ,UpdateTask)
-router.delete('/delete-task/:id',middleware ,DeleteTask)
+router.post('/task',middleware ,CreateTask)
+router.get('/task',middleware ,GetTask)
+router.patch('/task/:id',middleware ,UpdateTask)
+router.delete('/task/:id',middleware ,DeleteTask)
 
 
 export default router

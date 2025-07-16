@@ -14,9 +14,8 @@ app.use(cors({
      origin: true,
      credentials: true,
 }))
-
-app.use('/api/auth',UserRouter)
-app.use('/api/task',TaskRouter)
+app.use('/',UserRouter)
+app.use('/',TaskRouter)
 app.listen(PORT,()=>{
      console.log("the server connect with port ",PORT)
      DBconnect();

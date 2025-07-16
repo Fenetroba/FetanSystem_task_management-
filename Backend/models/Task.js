@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-
 const tasks = new mongoose.Schema({
   name: { type: String, required: true },
   status: { type: String, default: "pending" ,enum:["complited","pending"]},

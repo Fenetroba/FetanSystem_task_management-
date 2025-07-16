@@ -111,3 +111,25 @@ export const UserProfile = async (req, res) => {
        return res.status(401).json({ success: false, message: "Invalid or expired token" });
      }
    };
+
+export const refreshToken = async (req, res) => {
+    try {
+      const refreshToken = req.cookies.refreshToken;
+      if (!refreshToken) {
+        return res.status(401).json({ message: "No refresh token provided" });
+      }
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+ 
+      const accessToken = jwt.sign({ userId: decoded.userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 15 * 60 * 1000,
+      });
+      res.json({ message: "Token refreshed successfully" });
+    } catch (error) {
+      console.log("Error in refreshToken controller", error.message);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
